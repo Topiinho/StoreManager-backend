@@ -13,3 +13,56 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// Schemas do banco de dados (models)
+
+
+enum UserType {
+  ADM
+  Basic
+  Seller
+  Buyer
+  Personalized
+}
+
+enum TransactionType {
+  Sale
+  Purchase
+}
+
+model User {
+  IdUser    Int       @id @default(autoincrement()) @map("IdUser")
+  Login     String    @unique
+  Password  String  
+  UserType  UserType
+}
+
+model Product {
+  IdProduct Int     @id @default(autoincrement()) @map("IdProduct")
+  Name      String  
+  Model     String
+  Stock     Int
+  Cost      Float   
+  Value     Float
+  PurchaseLists PurchaseList[]
+}
+
+model Transaction{
+  IdTransaction Int                 @id @default(autoincrement()) @map("IdTransaction")
+  PurchaseLists PurchaseList[]
+  TransactionType TransactionType
+  Value Float
+  Cost  Float
+  Date DateTime                     @default(now())
+}
+
+model PurchaseList{
+  ProductId       Int
+  TransactionId   Int
+
+  Product  Product          @relation(fields: [ProductId], references: [IdProduct])
+  Transaction Transaction   @relation(fields: [TransactionId], references: [IdTransaction])
+
+  @@id([ProductId, TransactionId])
+}
+
