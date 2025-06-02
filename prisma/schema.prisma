@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -20,9 +19,6 @@ datasource db {
 enum UserType {
   ADM
   Basic
-  Seller
-  Buyer
-  Personalized
 }
 
 enum TransactionType {
