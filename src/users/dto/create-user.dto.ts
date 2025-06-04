@@ -16,4 +16,5 @@ export class CreateUserDto {
     @ApiProperty({ example: 'ADM or Basic'})
     @IsNotEmpty({ message: 'User Type Required'})
     UserType: UserType;
+
 }

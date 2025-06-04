@@ -11,7 +11,6 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
 
 @Controller('users')
 @ApiBearerAuth('access-token')
@@ -28,10 +27,6 @@ export class UsersController {
         return await this.userService.findOne(+id);
     }
 
-    @Post('login')
-    async login(@Body() login: LoginUserDto) {
-        return await this.userService.login(login);
-    }
 
     @Post('creat_user')
     async creat (@Body() createUserDto: CreateUserDto){
@@ -39,7 +34,7 @@ export class UsersController {
     }
 
     @Patch('update')
-    async update (@Body() updateUserDto: CreateUserDto){
+    async update (@Body() updateUserDto: UpdateUserDto){
         return await this.userService.update(updateUserDto);
     }
 

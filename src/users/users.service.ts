@@ -1,13 +1,12 @@
 import { 
     Injectable,
     NotFoundException,
-    UnauthorizedException,
     ConflictException
- } from '@nestjs/common';
+} from '@nestjs/common';
+import { hash } from 'bcrypt'
 import { PrismaService } from 'src/database/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto'
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -31,43 +30,38 @@ export class UsersService {
         return user;
     }
 
-    async login (loginUserDto: LoginUserDto){
-        const user = await this.prisma.user.findFirst({ where: { Login: loginUserDto.login } });
-
-        console.log(user); // Adicione isto para ver o usuário retornado
-
-        if(!user){
-            throw new UnauthorizedException('Incorrect email or password!');
-        }
-        
-        console.log(user.Password, loginUserDto.password)
-        if(loginUserDto.password == user.Password){
-            return {
-                Message: 'Login successfully!'
-            }
-        } else {
-            throw new UnauthorizedException('Incorrect email or password!!');
-        }
-    }
-
     async creat (createUserDto: CreateUserDto){
         if(await this.prisma.user.findFirst({ where: {Login: createUserDto.Login} })) {
             throw new ConflictException('Login already exists');
         }
 
-        return await this.prisma.user.create({ data: createUserDto });
+        const saltRounds = 10;
+        const hashedPassword = await hash(createUserDto.Password, saltRounds);
+
+        return await this.prisma.user.create({ data: {
+            Login: createUserDto.Login,
+            Password: hashedPassword,
+            UserType: createUserDto.UserType
+        }});
     }
 
     async update (updateUser: UpdateUserDto){
-        const user = await this.prisma.user.findFirst({ where: {Login: updateUser.Login} });
+        const user = await this.prisma.user.findFirst({ where: {Login: updateUser.User} });
 
         if(!user) {
             throw new NotFoundException('User not found');
         }
 
+        const saltRounds = 10;
+        const hashedPassword = await hash(updateUser.NewPassword, saltRounds);
+
         return await this.prisma.user.update({
-            where: {Login: updateUser.Login},
-            data: updateUser
+            where: {Login: updateUser.User},
+            data: {
+                Login: updateUser.NewLogin,
+                Password: hashedPassword,
+                UserType: updateUser.UserType
+            }
         });
     }
 
