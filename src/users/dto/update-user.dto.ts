@@ -13,7 +13,7 @@ export class UpdateUserDto {
     @IsString({ message: 'User has to be a string' })
     NewLogin: string;
 
-    @ApiProperty({ example: '123456789' })
+    @ApiProperty({ example: 'senha123' })
     @IsNotEmpty({ message: 'Password Required' })
     @IsString({ message: 'Password has to be a string' })
     NewPassword: string;

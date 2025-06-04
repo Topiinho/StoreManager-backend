@@ -8,7 +8,7 @@ export class CreateUserDto {
     @IsString({ message: 'login has to be a string' })
     Login: string;
 
-    @ApiProperty({ example: '123456789' })
+    @ApiProperty({ example: 'senha123' })
     @IsNotEmpty({ message: 'Password Required' })
     @IsString({ message: 'Password has to be a string' })
     Password: string;

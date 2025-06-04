@@ -9,6 +9,7 @@ async function bootstrap() {
     .setTitle('StoreManager API')
     .setDescription('API para gerenciamento de lojas')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
